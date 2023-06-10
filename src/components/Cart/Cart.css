@@ -1,0 +1,8 @@
+.cart {
+    position: sticky;
+    top: 100px;
+}
+
+.grand-total {
+    font-size: 21px;
+}

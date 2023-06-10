@@ -1,18 +1,53 @@
 import React, { useEffect, useState } from 'react';
 import './Shop.css';
 import Product from '../../Product/Product';
+import Cart from '../../Cart/Cart';
+import { addToStorage, getStoredCart } from '../../../utilities/saveShoppingCartData';
 
 const Shop = () => {
     const [products, setProducts] = useState([]);
+    const [cart, setCart] = useState([]);
 
+    // load all products 
     useEffect(() => {
         fetch('products.json')
             .then(res => res.json())
             .then(data => setProducts(data))
-    }, [])
+    }, []);
 
-    const handleAddToCart = (product) => {
-        console.log(product);
+    // load stored cart data from local storage
+    useEffect(() => {
+        const storedCart = getStoredCart();
+
+        const savedCart = [];
+        for (const id in storedCart) {
+            const addedProduct = products.find(product => product.id === id);
+            if (addedProduct) {
+                const quantity = storedCart[id];
+                addedProduct.quantity = quantity;
+                savedCart.push(addedProduct);
+            }
+        }
+        setCart(savedCart);
+
+    }, [products])
+
+
+    const handleAddToCart = (selectedProduct) => {
+        let newCart = [];
+
+        const exists = cart.find(product => product.id === selectedProduct.id);
+        if (exists) {
+            const rest = cart.filter(product => product.id !== selectedProduct.id);
+            exists.quantity = exists.quantity + 1;
+            newCart = [...rest, exists];
+        } else {
+            selectedProduct.quantity = 1;
+            newCart = [...cart, selectedProduct];
+        }
+
+        setCart(newCart);
+        addToStorage(selectedProduct.id);
     }
 
     return (
@@ -24,7 +59,7 @@ const Shop = () => {
             </div>
 
             <div className="cart-container">
-                <h2>Order Summary</h2>
+                <Cart cart={cart}></Cart>
             </div>
         </div>
     );
