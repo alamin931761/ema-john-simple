@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './Shop.css';
-import Product from '../../Product/Product';
-import Cart from '../../Cart/Cart';
-import { addToStorage, getStoredCart } from '../../../utilities/saveShoppingCartData';
+import Product from '../Product/Product';
+import Cart from '../Cart/Cart';
+import { addToStorage, getStoredCart } from '../../utilities/saveShoppingCartData';
 
 const Shop = () => {
     const [products, setProducts] = useState([]);
